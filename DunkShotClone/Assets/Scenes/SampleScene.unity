@@ -232,7 +232,7 @@ EdgeCollider2D:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 84a46b35270bda747b3fc6b2d3ad71d8, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -274,7 +274,7 @@ EdgeCollider2D:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 84a46b35270bda747b3fc6b2d3ad71d8, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -388,10 +388,6 @@ PrefabInstance:
     - target: {fileID: 1188025701938452075, guid: 23256d365f08f1e4daa62b19ad306d44, type: 3}
       propertyPath: m_Name
       value: Ball
-      objectReference: {fileID: 0}
-    - target: {fileID: 1491865279647035701, guid: 23256d365f08f1e4daa62b19ad306d44, type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5696314039887084687, guid: 23256d365f08f1e4daa62b19ad306d44, type: 3}
       propertyPath: m_LocalPosition.x
