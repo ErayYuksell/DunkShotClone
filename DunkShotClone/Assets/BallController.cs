@@ -13,6 +13,7 @@ public class BallController : MonoBehaviour
 
     Transform hoop; // Potanýn alt kýsmý
     LineRenderer trajectoryLineRenderer; // Çizim için LineRenderer
+    bool inTheAir = false; // havadayken hicbir sey yapamayacagiz
 
     private void Start()
     {
@@ -21,52 +22,55 @@ public class BallController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!inTheAir)
         {
-            touchStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            touchStartPos.z = 0;
-            isDragging = true;
-            rb.velocity = Vector2.zero; // Topun hareketini durdur
-        }
+            if (Input.GetMouseButtonDown(0))
+            {
+                touchStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                touchStartPos.z = 0;
+                isDragging = true;
+                rb.velocity = Vector2.zero; // Topun hareketini durdur
+            }
 
-        if (Input.GetMouseButton(0) && isDragging)
-        {
-            Vector3 currentTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            currentTouchPos.z = 0;
+            if (Input.GetMouseButton(0) && isDragging)
+            {
+                Vector3 currentTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                currentTouchPos.z = 0;
 
-            Vector3 direction = touchStartPos - currentTouchPos; // Yönü doðru hesapla
-            float distance = Mathf.Clamp(direction.magnitude, 0, 0.2f);
+                Vector3 direction = touchStartPos - currentTouchPos; // Yönü doðru hesapla
+                float distance = Mathf.Clamp(direction.magnitude, 0, 0.2f);
 
 
-            // Potanýn yönünü deðiþtir
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            hoop.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90)); // 90 derece çýkarmamýzýn sebebi, baþlangýç rotasyonunun yukarýyý göstermesini saðlamak
+                // Potanýn yönünü deðiþtir
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                hoop.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90)); // 90 derece çýkarmamýzýn sebebi, baþlangýç rotasyonunun yukarýyý göstermesini saðlamak
 
-            // Topun pozisyonunu ve rotasyonunu ayarla
-            rb.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+                // Topun pozisyonunu ve rotasyonunu ayarla
+                rb.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
 
-            // Tahmini hareketi çiz
-            Vector3 force = direction * 10; // Gücü ayarla
-            DrawTrajectory(rb, force);
-        }
+                // Tahmini hareketi çiz
+                Vector3 force = direction * 10; // Gücü ayarla
+                DrawTrajectory(rb, force);
+            }
 
-        if (Input.GetMouseButtonUp(0) && isDragging)
-        {
-            isDragging = false;
+            if (Input.GetMouseButtonUp(0) && isDragging)
+            {
+                isDragging = false;
 
-            // Potanýn alt kýsmýný sýfýrla
-            hoop.rotation = Quaternion.identity;
+                // Potanýn alt kýsmýný sýfýrla
+                hoop.rotation = Quaternion.identity;
 
-            // Topa kuvvet uygula
-            touchEndPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            touchEndPos.z = 0;
-            Vector3 force = (touchStartPos - touchEndPos) * 10;
+                // Topa kuvvet uygula
+                touchEndPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                touchEndPos.z = 0;
+                Vector3 force = (touchStartPos - touchEndPos) * 10;
 
-            rb.isKinematic = false;
-            rb.AddForce(force, ForceMode2D.Impulse); // Çarpaný ayarlayabilirsiniz
+                rb.isKinematic = false;
+                rb.AddForce(force, ForceMode2D.Impulse); // Çarpaný ayarlayabilirsiniz
 
-            // Çizgiyi gizle
-            trajectoryLineRenderer.positionCount = 0;
+                // Çizgiyi gizle
+                trajectoryLineRenderer.positionCount = 0;
+            }
         }
     }
 
@@ -91,11 +95,21 @@ public class BallController : MonoBehaviour
     {
         if (collision.tag == "Hoop")
         {
+            inTheAir = false;
             hoop = collision.gameObject.transform.Find("Hoop");
             HoopController hoopController = collision.gameObject.GetComponent<HoopController>();
             trajectoryLineRenderer = hoopController.GetComponent<LineRenderer>();
             trajectoryLineRenderer.positionCount = 0; // Baþlangýçta çizgiyi gizle
             trajectoryLineRenderer.useWorldSpace = true; // Dünya koordinatlarýný kullan
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Hoop")
+        {
+            hoop = null;
+            inTheAir = true;
         }
     }
 }
