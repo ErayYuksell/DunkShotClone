@@ -7,12 +7,11 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [SerializeField] GameObject hoopPrefab;
+    [SerializeField] List<GameObject> hoopstypes = new List<GameObject>();
     [SerializeField] List<GameObject> hoops = new List<GameObject>();
-
     [SerializeField] GameObject hoopWrapper;
 
-    int removeCount = -1;
-
+    int creationAmount = 0;
     private void Awake()
     {
         if (Instance == null)
@@ -45,7 +44,20 @@ public class GameManager : MonoBehaviour
     {
         if (hoops.Count < 2) // Eðer 2'den az pota varsa
         {
-            GameObject hoopObj = Instantiate(hoopPrefab, hoopWrapper.transform);
+            creationAmount++;
+            GameObject type;
+
+            if (creationAmount < 4) // 3 kere pota olusturduktan sonra 1 kere star li pota olustur
+            {
+                type = hoopstypes[0];
+            }
+            else
+            {
+                type = hoopstypes[1];
+                creationAmount = 0;
+            }
+
+            GameObject hoopObj = Instantiate(type, hoopWrapper.transform);
             hoops.Add(hoopObj);
             SetLocation(hoopObj);
         }
