@@ -98,6 +98,7 @@ public class BallController : MonoBehaviour
             // Skoru artýr
             UIManager.Instance.IncreaseScore(1);
             hoopController.hasScored = true;
+            hoopController.CloseTheHoop();
         }
     }
 
