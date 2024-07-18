@@ -27,7 +27,18 @@ public class GameManager : MonoBehaviour
     public void SetLocation(GameObject hoop)
     {
         float newY = hoops[0].transform.position.y + Random.Range(2f, 3f); // 0 dememin nedeni zaten kesin 2 pota olucak listede ve her zaman 1 indisli eleman degisecek 
-        Vector3 location = new Vector3(Random.Range(1.5f, -1.5f), newY, 0);
+        float newX;
+
+        if (hoops[0].transform.position.x < 0)
+        {
+            newX = Random.Range(0, 1.5f);
+        }
+        else
+        {
+            newX = Random.Range(-1.5f, 0);
+        }
+
+        Vector3 location = new Vector3(newX, newY, 0);
         hoop.transform.position = location;
     }
     public void CreateHoop()
@@ -39,7 +50,7 @@ public class GameManager : MonoBehaviour
             SetLocation(hoopObj);
         }
     }
-
+    // 1. potaya top girdiginde surekli 0. eleman siliniyor artik 1. pota 0. pota haline gelirken yeni eklenen pota 1. pota oluyor bu sekilde dongu ile ilerliyor 
     public void RemoveHoopFromList()
     {
         hoops[0].SetActive(false);
