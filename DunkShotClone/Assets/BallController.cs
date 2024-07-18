@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class BallController : MonoBehaviour
 {
     Rigidbody2D rb;
+    public GameObject redDotPrefab; // Kýrmýzý nokta prefab'i
 
     Vector3 touchStartPos;
     Vector3 touchEndPos;
@@ -13,7 +14,7 @@ public class BallController : MonoBehaviour
     bool inTheAir = false; // havadayken hiçbir þey yapamayacaðýz
 
     Transform hoop; // Pota
-    LineRenderer trajectoryLineRenderer; // Çizim için LineRenderer
+    List<GameObject> trajectoryDots = new List<GameObject>(); // Çizim için kullanýlan noktalar
 
     HoopController hoopController;
 
@@ -32,7 +33,7 @@ public class BallController : MonoBehaviour
                 touchStartPos.z = 0;
                 isDragging = true;
                 rb.velocity = Vector2.zero; // Topun hareketini durdur
-                trajectoryLineRenderer.positionCount = 2; // Çizgiyi etkinleþtir
+                ClearTrajectoryDots();
             }
 
             if (Input.GetMouseButton(0) && isDragging)
@@ -51,9 +52,7 @@ public class BallController : MonoBehaviour
                 rb.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
 
                 // Çizgi çizimini güncelle
-                Vector3[] linePositions = CalculateTrajectory(rb.position, direction.normalized * distance * 5); // Distance ile çarparak çizginin uzunluðunu ayarla
-                trajectoryLineRenderer.positionCount = linePositions.Length;
-                trajectoryLineRenderer.SetPositions(linePositions);
+                DrawTrajectory(rb.position, direction.normalized * distance * 5); // Distance ile çarparak çizginin uzunluðunu ayarla
             }
 
             if (Input.GetMouseButtonUp(0) && isDragging)
@@ -72,7 +71,7 @@ public class BallController : MonoBehaviour
                 rb.AddForce(force, ForceMode2D.Impulse);
 
                 // Çizgiyi gizle
-                trajectoryLineRenderer.positionCount = 0;
+                ClearTrajectoryDots();
             }
         }
         else
@@ -90,9 +89,7 @@ public class BallController : MonoBehaviour
             hoop = collision.gameObject.transform.Find("Hoop");
             hoopController = collision.gameObject.GetComponent<HoopController>();
 
-            trajectoryLineRenderer = hoopController.GetComponent<LineRenderer>();
-            trajectoryLineRenderer.positionCount = 0; // Baþlangýçta çizgiyi gizle
-            trajectoryLineRenderer.useWorldSpace = true; // Dünya koordinatlarýný kullan
+            ClearTrajectoryDots(); // Çizim noktalarýný temizle
         }
         // Eðer çarpýlan collider bir CircleCollider2D ise
         CircleCollider2D circleCollider = collision as CircleCollider2D;
@@ -119,21 +116,31 @@ public class BallController : MonoBehaviour
         transform.Rotate(new Vector3(0, 0, 360) * Time.deltaTime);
     }
 
-    // Topun gideceði yolu hesaplayan fonksiyon
-    private Vector3[] CalculateTrajectory(Vector2 startPosition, Vector2 velocity)
+    // Çizim noktalarýný temizleme fonksiyonu
+    private void ClearTrajectoryDots()
     {
-        List<Vector3> positions = new List<Vector3>();
+        foreach (var dot in trajectoryDots)
+        {
+            Destroy(dot);
+        }
+        trajectoryDots.Clear();
+    }
+
+    // Trajectory çizme fonksiyonu
+    private void DrawTrajectory(Vector2 startPosition, Vector2 velocity)
+    {
+        ClearTrajectoryDots(); // Mevcut noktalarý temizle
+
         Vector2 gravity = Physics2D.gravity;
-        float timeStep = 0.05f; // Zaman aralýðýný biraz artýrdýk
-        int steps = 20; // Adým sayýsýný artýrarak çizgiyi uzatýyoruz
+        float timeStep = 0.1f;
+        int steps = 15; // Adým sayýsýný ayarla
 
         for (int i = 0; i < steps; i++)
         {
             float t = i * timeStep;
             Vector3 position = startPosition + velocity * t + 0.5f * gravity * t * t;
-            positions.Add(position);
+            GameObject dot = Instantiate(redDotPrefab, position, Quaternion.identity);
+            trajectoryDots.Add(dot);
         }
-
-        return positions.ToArray();
     }
 }
