@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class HoopController : MonoBehaviour
 {
-   
+    public bool hasScored = false;
 }

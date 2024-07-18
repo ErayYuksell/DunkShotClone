@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BallController : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class BallController : MonoBehaviour
     Transform hoop; // Pota
     LineRenderer trajectoryLineRenderer; // Çizim için LineRenderer
 
+    HoopController hoopController;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -65,7 +67,7 @@ public class BallController : MonoBehaviour
                 Vector3 force = (touchStartPos - touchEndPos) * 10;
 
                 rb.isKinematic = false;
-                rb.AddForce(force, ForceMode2D.Impulse); 
+                rb.AddForce(force, ForceMode2D.Impulse);
 
                 // Çizgiyi gizle
                 trajectoryLineRenderer.positionCount = 0;
@@ -82,11 +84,22 @@ public class BallController : MonoBehaviour
         if (collision.tag == "Hoop")
         {
             inTheAir = false;
+
             hoop = collision.gameObject.transform.Find("Hoop");
-            HoopController hoopController = collision.gameObject.GetComponent<HoopController>();
+            hoopController = collision.gameObject.GetComponent<HoopController>();
+
             trajectoryLineRenderer = hoopController.GetComponent<LineRenderer>();
             trajectoryLineRenderer.positionCount = 0; // Baþlangýçta çizgiyi gizle
             trajectoryLineRenderer.useWorldSpace = true; // Dünya koordinatlarýný kullan
+        }
+        // Eðer çarpýlan collider bir CircleCollider2D ise
+        CircleCollider2D circleCollider = collision as CircleCollider2D;
+        if (circleCollider != null && collision.tag == "Hoop" && !hoopController.hasScored)
+        {
+
+            // Skoru artýr
+            UIManager.Instance.IncreaseScore(1);
+            hoopController.hasScored = true;
         }
     }
 
