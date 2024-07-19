@@ -34,21 +34,46 @@ public class GameManager : MonoBehaviour
 
     public void SetLocation(GameObject hoop)
     {
-        float newY = hoops[0].transform.position.y + Random.Range(2f, 3f); // 0 dememin nedeni zaten kesin 2 pota olucak listede ve her zaman 1 indisli eleman degisecek 
+        float newY;
         float newX;
+        bool positionIsValid = false;
 
-        if (hoops[0].transform.position.x < 0)
+        while (!positionIsValid)
         {
-            newX = Random.Range(0, 1.5f);
-        }
-        else
-        {
-            newX = Random.Range(-1.5f, 0);
-        }
+            newY = hoops[0].transform.position.y + Random.Range(2f, 3f); // 0 dememin nedeni zaten kesin 2 pota olucak listede ve her zaman 1 indisli eleman degisecek 
 
-        Vector3 location = new Vector3(newX, newY, 0);
-        hoop.transform.position = location;
+            if (hoops[0].transform.position.x < 0)
+            {
+                newX = Random.Range(0.5f, 1.5f); // Pozisyonu biraz daha dýþarýda tutmak için aralýðý deðiþtirdik
+            }
+            else
+            {
+                newX = Random.Range(-1.5f, -0.5f); // Pozisyonu biraz daha dýþarýda tutmak için aralýðý deðiþtirdik
+            }
+
+            Vector3 location = new Vector3(newX, newY, 0);
+
+            // Mevcut potalarýn konumlarýna göre yeni pozisyonun geçerli olup olmadýðýný kontrol et
+            positionIsValid = true;
+            foreach (var existingHoop in hoops)
+            {
+                // Yeni pozisyon mevcut potalarýn konumuyla tamamen çakýþmamalý
+                if (Vector3.Distance(location, existingHoop.transform.position) < 2f ||
+                    Mathf.Abs(location.x - existingHoop.transform.position.x) < 0.1f)
+                {
+                    positionIsValid = false;
+                    break;
+                }
+            }
+
+            if (positionIsValid)
+            {
+                hoop.transform.position = location;
+            }
+        }
     }
+
+
     public void CreateHoop()
     {
         if (hoops.Count < 2) // Eðer 2'den az pota varsa
