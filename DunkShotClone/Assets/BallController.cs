@@ -19,7 +19,7 @@ public class BallController : MonoBehaviour
 
     HoopController hoopController;
 
-   
+    [SerializeField] private bool hitOnlyCircleCollider = true; // Deliksiz giriþ kontrolü
 
     private void Start()
     {
@@ -83,6 +83,12 @@ public class BallController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Topun herhangi bir þeyle çarpýþtýðýný iþaretle
+        hitOnlyCircleCollider = false;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Hoop")
@@ -94,19 +100,27 @@ public class BallController : MonoBehaviour
 
             ClearTrajectoryDots(); // Çizim noktalarýný temizle
         }
+
         // Eðer çarpýlan collider bir CircleCollider2D ise
         CircleCollider2D circleCollider = collision as CircleCollider2D;
         if (circleCollider != null && collision.tag == "Hoop" && !hoopController.hasScored)
         {
-            // Skoru artýr
-            UIManager.Instance.IncreaseScore(1);
+            // Deliksiz giriþi kontrol et
+            if (hitOnlyCircleCollider)
+            {
+                UIManager.Instance.IncreaseScore(2); // Deliksiz giriþte ekstra puan ver
+            }
+            else
+            {
+                UIManager.Instance.IncreaseScore(1); // Normal puan ver
+            }
+
             hoopController.hasScored = true;
             hoopController.CloseTheHoop();
+
+            // Skor verildikten sonra bayraðý sýfýrla
+            hitOnlyCircleCollider = true;
         }
-        //if (collision.tag == "Star")
-        //{
-        //    collision.gameObject.GetComponent<StarManager>().IncreaseStar();
-        //}
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -115,6 +129,9 @@ public class BallController : MonoBehaviour
         {
             hoop = null;
             inTheAir = true;
+
+            // Potadan çýkarken deliksiz giriþi sýfýrla
+            hitOnlyCircleCollider = true;
         }
     }
 

@@ -32,7 +32,7 @@ public class StarManager : MonoBehaviour
         starText.text = starCount.ToString();
 
         // Star image'ine doðru hareket ettir
-        MoveStarToUI();
+        //MoveStarToUI();
     }
 
     public void SetStarAmount(int starCount)
@@ -49,7 +49,13 @@ public class StarManager : MonoBehaviour
     {
         Vector3 targetPosition = GetWorldPositionFromUI();
         animator.enabled = false;
-        transform.DOMove(targetPosition, 1f).SetEase(Ease.InQuad).OnComplete(OnReachedTarget);
+        transform.DOMove(targetPosition, 1f).SetEase(Ease.InQuad).OnComplete(() =>
+        {
+            OnReachedTarget();
+            IncreaseStar();
+        });
+
+
     }
 
     private Vector3 GetWorldPositionFromUI()
@@ -74,12 +80,13 @@ public class StarManager : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Ball"  && !isTouch)
+        if (collision.tag == "Ball" && !isTouch)
         {
             // Yýldýz objesini harekete geçirmeden önce yýldýzýn collider'ýný devre dýþý býrakýn
-            isTouch = true; 
+            isTouch = true;
             GetComponent<Collider2D>().enabled = false;
-            IncreaseStar();
+            //IncreaseStar();
+            MoveStarToUI();
         }
     }
 }
