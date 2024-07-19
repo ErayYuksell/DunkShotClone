@@ -50,10 +50,17 @@ public class StarManager : MonoBehaviour
     private Vector3 GetWorldPositionFromUI()
     {
         Vector3 uiPos = starUIImageTransform.position;
-        uiPos = Camera.main.ScreenToWorldPoint(uiPos);
-        uiPos.z = 0; // Z eksenini sýfýrlayarak 2D dünyasýnda kalmasýný saðlýyoruz
-        return uiPos;
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(uiPos); // WorldToScreenPoint kullanarak ekran pozisyonunu al
+        screenPos.z = Camera.main.nearClipPlane; // Z eksenini ayarla
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPos); // Ekran pozisyonunu dünya pozisyonuna çevir
+        worldPosition.z = 0; // Z eksenini sýfýrla
+
+        // Hedef pozisyonu biraz aþaðý çek
+        worldPosition.y -= 1.5f; // Bu deðeri ihtiyaca göre ayarlayýn
+
+        return worldPosition;
     }
+
 
     private void OnReachedTarget()
     {
