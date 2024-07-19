@@ -11,12 +11,17 @@ public class StarManager : MonoBehaviour
     TextMeshProUGUI starText;
     Animator animator;
 
+    bool isTouch = false;
     private void Start()
     {
         // StarManager'in baþlatýldýðýnda starUIImageTransform referansýný al
         starUIImageTransform = GameManager.Instance.GetStarUIImageTransform();
         starText = GameManager.Instance.GetStarText();
         animator = GetComponent<Animator>();
+
+        // Oyunun baþýnda PlayerPrefs'ten star miktarýný çek ve starCount deðiþkenine ata
+        starCount = PlayerPrefs.GetInt("StarAmount", 0);
+        starText.text = starCount.ToString(); // Baþlangýçtaki star miktarýný starText'e ata
     }
 
     public void IncreaseStar()
@@ -37,7 +42,7 @@ public class StarManager : MonoBehaviour
 
     public int GetStarAmount()
     {
-        return PlayerPrefs.GetInt("StarAmount");
+        return PlayerPrefs.GetInt("StarAmount", 0);
     }
 
     private void MoveStarToUI()
@@ -69,9 +74,10 @@ public class StarManager : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Ball")
+        if (collision.tag == "Ball"  && !isTouch)
         {
             // Yýldýz objesini harekete geçirmeden önce yýldýzýn collider'ýný devre dýþý býrakýn
+            isTouch = true; 
             GetComponent<Collider2D>().enabled = false;
             IncreaseStar();
         }

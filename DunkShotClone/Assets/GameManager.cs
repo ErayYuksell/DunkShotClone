@@ -29,7 +29,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        starText.text = PlayerPrefs.GetInt("Start").ToString();
+        int starAmount = PlayerPrefs.GetInt("StarAmount", 0); // 'StarAmount' anahtarýndan veri çek ve varsayýlan deðeri 0 olarak ayarla
+        starText.text = starAmount.ToString();
     }
 
     public void SetLocation(GameObject hoop)
