@@ -35,7 +35,7 @@ public class UIManager : MonoBehaviour
     {
         Time.timeScale = 1;
         gamePauseUI.SetActive(false);
-        gamePauseUI.SetActive(true);
+        gameUI.SetActive(true);
     }
     public void TapRestartButton()
     {

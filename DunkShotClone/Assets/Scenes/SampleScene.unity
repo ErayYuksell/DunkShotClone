@@ -972,14 +972,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4af26462fc07a5a4d9024f0179805c38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoopPrefab: {fileID: 1088821912395367609, guid: 38869166ee79e6842922d12b9e027c7b, type: 3}
+  hoopWrapper: {fileID: 1918924724}
   hoopstypes:
   - {fileID: 1088821912395367609, guid: 38869166ee79e6842922d12b9e027c7b, type: 3}
   - {fileID: 9043274823696749171, guid: ffac029e0d149ef4288501ac264f17e1, type: 3}
   hoops:
   - {fileID: 740355513}
   - {fileID: 1113266505}
-  hoopWrapper: {fileID: 1918924724}
+  starUIImageTransform: {fileID: 1391003721}
+  starText: {fileID: 1453366023}
 --- !u!4 &1327763480
 Transform:
   m_ObjectHideFlags: 0
@@ -1029,7 +1030,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.000030517578, y: -0.00012207031}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1391003722
@@ -1216,6 +1217,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ball
       objectReference: {fileID: 0}
+    - target: {fileID: 5336320304667773057, guid: 23256d365f08f1e4daa62b19ad306d44, type: 3}
+      propertyPath: starText
+      value: 
+      objectReference: {fileID: 1453366023}
+    - target: {fileID: 5336320304667773057, guid: 23256d365f08f1e4daa62b19ad306d44, type: 3}
+      propertyPath: starUIImageTransform
+      value: 
+      objectReference: {fileID: 1391003721}
     - target: {fileID: 5696314039887084687, guid: 23256d365f08f1e4daa62b19ad306d44, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.34

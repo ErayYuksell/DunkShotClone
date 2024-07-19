@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    [SerializeField] GameObject hoopPrefab;
+    [SerializeField] GameObject hoopWrapper;
     [SerializeField] List<GameObject> hoopstypes = new List<GameObject>();
     [SerializeField] List<GameObject> hoops = new List<GameObject>();
-    [SerializeField] GameObject hoopWrapper;
+    [Header("StarSection")]
+    [SerializeField] RectTransform starUIImageTransform; // UI'daki star image'ine referans
+    [SerializeField] TextMeshProUGUI starText;
 
     int creationAmount = 0;
     private void Awake()
@@ -23,6 +26,12 @@ public class GameManager : MonoBehaviour
             Destroy(Instance);
         }
     }
+
+    private void Start()
+    {
+        starText.text = PlayerPrefs.GetInt("Start").ToString();
+    }
+
     public void SetLocation(GameObject hoop)
     {
         float newY = hoops[0].transform.position.y + Random.Range(2f, 3f); // 0 dememin nedeni zaten kesin 2 pota olucak listede ve her zaman 1 indisli eleman degisecek 
@@ -47,7 +56,7 @@ public class GameManager : MonoBehaviour
             creationAmount++;
             GameObject type;
 
-            if (creationAmount < 4) // 3 kere pota olusturduktan sonra 1 kere star li pota olustur
+            if (creationAmount < 2) // 3 kere pota olusturduktan sonra 1 kere star li pota olustur
             {
                 type = hoopstypes[0];
             }
@@ -73,5 +82,14 @@ public class GameManager : MonoBehaviour
     public bool GetHoopScoredInfo()
     {
         return hoops[1].GetComponent<HoopController>().hasScored;
+    }
+
+    public RectTransform GetStarUIImageTransform()
+    {
+        return starUIImageTransform;
+    }
+    public TextMeshProUGUI GetStarText()
+    {
+        return starText;
     }
 }

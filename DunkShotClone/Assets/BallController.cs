@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,6 +18,8 @@ public class BallController : MonoBehaviour
     List<GameObject> trajectoryDots = new List<GameObject>(); // Çizim için kullanýlan noktalar
 
     HoopController hoopController;
+
+   
 
     private void Start()
     {
@@ -100,6 +103,10 @@ public class BallController : MonoBehaviour
             hoopController.hasScored = true;
             hoopController.CloseTheHoop();
         }
+        //if (collision.tag == "Star")
+        //{
+        //    collision.gameObject.GetComponent<StarManager>().IncreaseStar();
+        //}
     }
 
     private void OnTriggerExit2D(Collider2D collision)

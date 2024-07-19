@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Hoop
   - Ball
+  - Star
   layers:
   - Default
   - TransparentFX
