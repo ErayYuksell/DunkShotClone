@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] GameObject hoopWrapper;
     [SerializeField] List<GameObject> hoopstypes = new List<GameObject>();
-    [SerializeField] List<GameObject> hoops = new List<GameObject>();
+    [SerializeField] List<GameObject> hoops = new List<GameObject>(); // Queue kullanabilirdin ama ayni sey 
     [Header("StarSection")]
     [SerializeField] RectTransform starUIImageTransform; // UI'daki star image'ine referans
     [SerializeField] TextMeshProUGUI starText;
@@ -117,5 +117,10 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI GetStarText()
     {
         return starText;
+    }
+
+    public bool HoopIsStrike()
+    {
+        return hoops[0].gameObject.GetComponent<HoopController>().isStrike;
     }
 }

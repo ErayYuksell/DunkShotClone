@@ -19,11 +19,16 @@ public class BallController : MonoBehaviour
 
     HoopController hoopController;
 
-    [SerializeField] private bool hitOnlyCircleCollider = true; // Deliksiz giriþ kontrolü
+    private bool hitOnlyCircleCollider = true; // Deliksiz giriþ kontrolü
+    ParticleSystem fireEffect;
+
+    int strikePoint = 1;
+    int strikeCount = 0;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        fireEffect = GetComponentInChildren<ParticleSystem>();
     }
 
     void Update()
@@ -87,6 +92,8 @@ public class BallController : MonoBehaviour
     {
         // Topun herhangi bir þeyle çarpýþtýðýný iþaretle
         hitOnlyCircleCollider = false;
+
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -108,14 +115,35 @@ public class BallController : MonoBehaviour
             // Deliksiz giriþi kontrol et
             if (hitOnlyCircleCollider)
             {
+                fireEffect.Play();
+                strikeCount++;
+                Debug.Log(strikeCount);
+                hoopController.OpenStrikeText(strikeCount);
+                //if (GameManager.Instance.HoopIsStrike())
+                //{
+                //    strikePoint++;
+                //    UIManager.Instance.IncreaseScore(strikePoint);
+                //    hoopController.OpenStrikeText(strikePoint);
+                //}
+                //else
+                //{
+                //    UIManager.Instance.IncreaseScore(2); // Deliksiz giriþte ekstra puan ver
+                //    hoopController.isStrike = true;
+                //}
                 UIManager.Instance.IncreaseScore(2); // Deliksiz giriþte ekstra puan ver
             }
             else
             {
+                //strikePoint = 0;
                 UIManager.Instance.IncreaseScore(1); // Normal puan ver
+                hoopController.OpenStrikeText(1);
+                strikeCount = 0;
+                Debug.Log("Bozuldu" + strikeCount);
             }
 
+
             hoopController.hasScored = true;
+            //hoopController.OpenStrikeText(1);
             hoopController.CloseTheHoop();
 
             // Skor verildikten sonra bayraðý sýfýrla
@@ -132,6 +160,9 @@ public class BallController : MonoBehaviour
 
             // Potadan çýkarken deliksiz giriþi sýfýrla
             hitOnlyCircleCollider = true;
+
+
+
         }
     }
 

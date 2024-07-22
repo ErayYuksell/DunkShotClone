@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject gameUI;
 
     [SerializeField] TextMeshProUGUI scoreText;
+    
     int score = 0;
     private void Awake()
     {
@@ -48,4 +49,5 @@ public class UIManager : MonoBehaviour
         score += value;
         scoreText.text = score.ToString();
     }
+   
 }
