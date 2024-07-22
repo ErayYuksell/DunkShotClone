@@ -19,11 +19,14 @@ public class BallController : MonoBehaviour
 
     HoopController hoopController;
 
-    private bool hitOnlyCircleCollider = true; // Deliksiz giriþ kontrolü
+    private bool hitOnlyCircleCollider = false; // Deliksiz giriþ kontrolü
+    bool firstColliderHit = false;
+
     ParticleSystem fireEffect;
 
-    int strikePoint = 1;
     int strikeCount = 0;
+
+   
 
     private void Start()
     {
@@ -88,16 +91,24 @@ public class BallController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        // Topun herhangi bir þeyle çarpýþtýðýný iþaretle
-        hitOnlyCircleCollider = false;
-
-
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!firstColliderHit) // Ýlk çarpma kontrolü
+        {
+            if (collision is CircleCollider2D && collision.tag == "Hoop")
+            {
+                // Ýlk çarpma CircleCollider2D ile
+                hitOnlyCircleCollider = true;
+                firstColliderHit = true; // Ýlk çarpma gerçekleþti if in sonuna koysam yildiz ile carpistiginda sikinti cikar 
+            }
+            else if (collision is EdgeCollider2D && collision.tag == "Hoop")
+            {
+                // Ýlk çarpma EdgeCollider2D ile
+                hitOnlyCircleCollider = false;
+                firstColliderHit = true; // Ýlk çarpma gerçekleþti
+            }
+        }
+
         if (collision.tag == "Hoop")
         {
             inTheAir = false;
@@ -117,54 +128,37 @@ public class BallController : MonoBehaviour
             {
                 fireEffect.Play();
                 strikeCount++;
-                Debug.Log(strikeCount);
+                hoopController.hasScored = true;
                 hoopController.OpenStrikeText(strikeCount);
-                //if (GameManager.Instance.HoopIsStrike())
-                //{
-                //    strikePoint++;
-                //    UIManager.Instance.IncreaseScore(strikePoint);
-                //    hoopController.OpenStrikeText(strikePoint);
-                //}
-                //else
-                //{
-                //    UIManager.Instance.IncreaseScore(2); // Deliksiz giriþte ekstra puan ver
-                //    hoopController.isStrike = true;
-                //}
-                UIManager.Instance.IncreaseScore(2); // Deliksiz giriþte ekstra puan ver
+                UIManager.Instance.IncreaseScore(strikeCount); // Deliksiz giriþte ekstra puan ver
             }
             else
             {
-                //strikePoint = 0;
+                fireEffect.Stop();
                 UIManager.Instance.IncreaseScore(1); // Normal puan ver
+                hoopController.hasScored = true;
                 hoopController.OpenStrikeText(1);
                 strikeCount = 0;
-                Debug.Log("Bozuldu" + strikeCount);
             }
 
-
-            hoopController.hasScored = true;
-            //hoopController.OpenStrikeText(1);
             hoopController.CloseTheHoop();
 
-            // Skor verildikten sonra bayraðý sýfýrla
-            hitOnlyCircleCollider = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == "Hoop")
+        if (collision.tag == "Hoop" && hoopController.hasScored)
         {
             hoop = null;
             inTheAir = true;
 
             // Potadan çýkarken deliksiz giriþi sýfýrla
-            hitOnlyCircleCollider = true;
-
-
-
+            hitOnlyCircleCollider = false;
+            firstColliderHit = false; // Ýlk çarpma kontrolünü sýfýrla
         }
     }
+
 
     public void BallRotate()
     {

@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
             creationAmount++;
             GameObject type;
 
-            if (creationAmount < 2) // 3 kere pota olusturduktan sonra 1 kere star li pota olustur
+            if (creationAmount < 2) // 3 kere pota olusturduktan sonra 1 kere starli pota olustur
             {
                 type = hoopstypes[0];
             }
